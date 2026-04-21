@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Intelligence Hub 2</title>
+    <title>NBA Intelligence Hub 3</title>
     <style>
         :root {
             --bg-body: #0a0f1a;
@@ -140,9 +140,8 @@
             <a href="https://x.com/S_Rabinal" target="_blank" class="x-link">@S_Rabinal</a>
             <a href="https://x.com/alejandroggoNBA" target="_blank" class="x-link">@alejandroggoNBA</a>
             <a href="https://x.com/VictorArrufat" target="_blank" class="x-link">@VictorArrufat</a>
-            <a href="https://x.com/Losilla_" target="_blank" class="x-link">@Losilla_</a>
         </div>
-        <div class="feed-container"><a class="twitter-timeline" data-theme="dark" href="https://twitter.com/alejandroggoNBA"></a></div>
+        <div class="feed-container" id="tw-es"></div>
     </div>
 
     <div class="section">
@@ -150,15 +149,17 @@
         <div class="x-list">
             <a href="https://x.com/ShamsCharania" target="_blank" class="x-link">@ShamsCharania</a>
             <a href="https://x.com/TheDunkCentral" target="_blank" class="x-link">@TheDunkCentral</a>
-            <a href="https://x.com/LegionHoops" target="_blank" class="x-link">@LegionHoops</a>
         </div>
-        <div class="feed-container"><a class="twitter-timeline" data-theme="dark" href="https://twitter.com/ShamsCharania"></a></div>
+        <div class="feed-container" id="tw-usa"></div>
     </div>
 </div>
 
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <script>
+    // SVG de reserva para evitar peticiones externas fallidas (Base64)
+    const FALLBACK_IMG = "data:image/svg+xml;charset=UTF-8,%3Csvg width='85' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23161e2d'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='10' fill='%2338bdf8' text-anchor='middle' dy='.3em'%3ENBA%3C/text%3E%3C/svg%3E";
+
     const CONFIG = {
         ES: ['https://www.nbamaniacs.com/feed/', 'https://www.gigantes.com/nba/feed', 'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml', 'https://www.mundodeportivo.com/feed/rss/baloncesto/nba', 'https://www.sport.es/es/rss/nba/rss.xml', 'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/'],
         USA: ['https://www.espn.com/espn/rss/nba/news', 'https://www.cbssports.com/rss/headlines/nba/', 'https://basketball.realgm.com/rss/wiretap/0/0.xml', 'https://www.hoopsrumors.com/feed', 'https://hoopswire.com/feed/', 'https://sports.yahoo.com/nba/rss/'],
@@ -198,7 +199,6 @@
         
         let allEntries = [];
 
-        // Usamos una técnica de "caché-busting" para obligar a los feeds a refrescarse
         const promises = urls.map(url => {
             const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`;
             return fetch(proxyUrl)
@@ -212,26 +212,20 @@
                                 link: item.link,
                                 pubDate: new Date(item.pubDate.replace(/-/g, "/")),
                                 source: source,
-                                img: item.thumbnail || item.enclosure.link || getOfficialLogo(source) || 'https://via.placeholder.com/85x60/161e2d/38bdf8?text=NBA'
+                                img: item.thumbnail || item.enclosure.link || getOfficialLogo(source) || FALLBACK_IMG
                             });
                         });
                     }
                 })
-                .catch(() => console.log("Fallo puntual en:", url));
+                .catch(() => {});
         });
 
         await Promise.all(promises);
-        
-        if (allEntries.length === 0) {
-            container.innerHTML = '<div style="padding:20px; color:orange; font-size:0.8rem;">No se han podido sincronizar las noticias. Inténtalo de nuevo en unos minutos.</div>';
-            return;
-        }
-
         allEntries.sort((a, b) => b.pubDate - a.pubDate);
 
         container.innerHTML = allEntries.map(item => `
             <a href="${item.link}" target="_blank" class="news-item">
-                <img src="${item.img}" class="thumb" onerror="this.src='https://via.placeholder.com/85x60/161e2d/38bdf8?text=NBA'">
+                <img src="${item.img}" class="thumb" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';">
                 <div class="news-content">
                     <span class="news-title">${item.title}</span>
                     <div class="news-meta">
@@ -243,10 +237,15 @@
         `).join('');
     }
 
-    // Iniciar carga
-    loadFeeds(CONFIG.ES, 'news-es');
-    loadFeeds(CONFIG.USA, 'news-usa');
-    loadFeeds(CONFIG.SUBS, 'news-subs');
+    // Carga segura de Twitter
+    window.onload = () => {
+        loadFeeds(CONFIG.ES, 'news-es');
+        loadFeeds(CONFIG.USA, 'news-usa');
+        loadFeeds(CONFIG.SUBS, 'news-subs');
+        
+        document.getElementById('tw-es').innerHTML = '<a class="twitter-timeline" data-theme="dark" href="https://twitter.com/alejandroggoNBA"></a>';
+        document.getElementById('tw-usa').innerHTML = '<a class="twitter-timeline" data-theme="dark" href="https://twitter.com/ShamsCharania"></a>';
+    };
 </script>
 </body>
 </html>
