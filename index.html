@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Intelligence Hub fecha</title>
+<title>NBA Intelligence Hub newslett</title>
 <style>
 :root { --bg-body: #0a0f1a; --bg-card: #161e2d; --text-main: #e2e8f0; --text-dim: #94a3b8; --accent: #38bdf8; --border: #2d3748; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 10px; }
@@ -47,21 +47,30 @@ const CONFIG = {
 
 function clean(n, u) {
     const l = u.toLowerCase();
+    // Medios España
     if (l.includes('mundodeportivo')) return 'MUNDO DEPORTIVO';
     if (l.includes('sport.es')) return 'SPORT';
     if (l.includes('marca.com')) return 'MARCA';
     if (l.includes('as.com')) return 'AS';
     if (l.includes('gigantes.com')) return 'GIGANTES';
     if (l.includes('nbamaniacs')) return 'NBA MANIACS';
+    // Medios USA
     if (l.includes('yahoo.com')) return 'YAHOO! SPORTS';
     if (l.includes('espn')) return 'ESPN';
     if (l.includes('cbssports')) return 'CBS SPORTS';
     if (l.includes('realgm')) return 'REALGM';
     if (l.includes('hoopsrumors')) return 'HOOPS RUMORS';
     if (l.includes('hoopswire')) return 'HOOPS WIRE';
+    // Newsletters (Ajustes solicitados)
+    if (l.includes('basketballintelligence')) return 'Basketball Intelligence';
+    if (l.includes('roycewebb')) return 'Royce Webb';
+    if (l.includes('alejandroggo')) return 'Alejandro Gaitán';
+    if (l.includes('tomthefinder')) return 'Tom Haberstroh';
     if (l.includes('nbaconcontexto')) return 'NBA CON CONTEXTO';
-    if (l.includes('alejandroggo')) return 'GAITÁN';
-    return n.toUpperCase().substring(0, 15);
+    if (l.includes('marcstein')) return 'MARC STEIN';
+    if (l.includes('truehoop')) return 'TRUEHOOP';
+    
+    return n.toUpperCase().substring(0, 20);
 }
 
 async function load(urls, id) {
@@ -76,7 +85,7 @@ async function load(urls, id) {
             if (data && data.items) {
                 data.items.forEach(i => {
                     const sourceName = clean(data.feed.title || 'NBA', u);
-                    const finalImg = LOGOS[sourceName] || i.thumbnail || i.enclosure.link || FALLBACK;
+                    const finalImg = LOGOS[sourceName.toUpperCase()] || i.thumbnail || i.enclosure.link || FALLBACK;
                     results.push({
                         t: i.title,
                         l: i.link,
