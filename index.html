@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Intelligence Hub newslett</title>
+<title>NBA Intelligence Hub mayus</title>
 <style>
 :root { --bg-body: #0a0f1a; --bg-card: #161e2d; --text-main: #e2e8f0; --text-dim: #94a3b8; --accent: #38bdf8; --border: #2d3748; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 10px; }
@@ -61,11 +61,11 @@ function clean(n, u) {
     if (l.includes('realgm')) return 'REALGM';
     if (l.includes('hoopsrumors')) return 'HOOPS RUMORS';
     if (l.includes('hoopswire')) return 'HOOPS WIRE';
-    // Newsletters (Ajustes solicitados)
-    if (l.includes('basketballintelligence')) return 'Basketball Intelligence';
-    if (l.includes('roycewebb')) return 'Royce Webb';
-    if (l.includes('alejandroggo')) return 'Alejandro Gaitán';
-    if (l.includes('tomthefinder')) return 'Tom Haberstroh';
+    // Newsletters
+    if (l.includes('basketballintelligence')) return 'BASKETBALL INTELLIGENCE';
+    if (l.includes('roycewebb')) return 'ROYCE WEBB';
+    if (l.includes('alejandroggo')) return 'ALEJANDRO GAITÁN';
+    if (l.includes('tomthefinder')) return 'TOM HABERSTROH';
     if (l.includes('nbaconcontexto')) return 'NBA CON CONTEXTO';
     if (l.includes('marcstein')) return 'MARC STEIN';
     if (l.includes('truehoop')) return 'TRUEHOOP';
@@ -85,7 +85,7 @@ async function load(urls, id) {
             if (data && data.items) {
                 data.items.forEach(i => {
                     const sourceName = clean(data.feed.title || 'NBA', u);
-                    const finalImg = LOGOS[sourceName.toUpperCase()] || i.thumbnail || i.enclosure.link || FALLBACK;
+                    const finalImg = LOGOS[sourceName] || i.thumbnail || i.enclosure.link || FALLBACK;
                     results.push({
                         t: i.title,
                         l: i.link,
