@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Intelligence Hub</title>
+    <title>NBA Intelligence Hub 2</title>
     <style>
         :root {
             --bg-body: #0a0f1a;
@@ -135,14 +135,24 @@
     
     <div class="section">
         <div class="section-header">🐦 X ESPAÑA</div>
-        <div class="x-list" id="x-es-links"></div>
-        <div class="feed-container" id="x-es-timeline"></div>
+        <div class="x-list">
+            <a href="https://x.com/KikeGarcia41" target="_blank" class="x-link">@KikeGarcia41</a>
+            <a href="https://x.com/S_Rabinal" target="_blank" class="x-link">@S_Rabinal</a>
+            <a href="https://x.com/alejandroggoNBA" target="_blank" class="x-link">@alejandroggoNBA</a>
+            <a href="https://x.com/VictorArrufat" target="_blank" class="x-link">@VictorArrufat</a>
+            <a href="https://x.com/Losilla_" target="_blank" class="x-link">@Losilla_</a>
+        </div>
+        <div class="feed-container"><a class="twitter-timeline" data-theme="dark" href="https://twitter.com/alejandroggoNBA"></a></div>
     </div>
 
     <div class="section">
         <div class="section-header">🐦 X USA</div>
-        <div class="x-list" id="x-usa-links"></div>
-        <div class="feed-container" id="x-usa-timeline"></div>
+        <div class="x-list">
+            <a href="https://x.com/ShamsCharania" target="_blank" class="x-link">@ShamsCharania</a>
+            <a href="https://x.com/TheDunkCentral" target="_blank" class="x-link">@TheDunkCentral</a>
+            <a href="https://x.com/LegionHoops" target="_blank" class="x-link">@LegionHoops</a>
+        </div>
+        <div class="feed-container"><a class="twitter-timeline" data-theme="dark" href="https://twitter.com/ShamsCharania"></a></div>
     </div>
 </div>
 
@@ -184,38 +194,39 @@
 
     async function loadFeeds(urls, containerId) {
         const container = document.getElementById(containerId);
-        container.innerHTML = '<div style="padding:20px; color:#555; font-size:0.8rem;">Sincronizando...</div>';
+        container.innerHTML = '<div style="padding:20px; color:#555; font-size:0.8rem;">Actualizando...</div>';
         
         let allEntries = [];
-        const parser = new DOMParser();
 
-        const promises = urls.map(async (url) => {
-            try {
-                // Usamos AllOrigins como proxy para evitar errores 500 y CORS
-                const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                const data = await response.json();
-                const doc = parser.parseFromString(data.contents, "text/xml");
-                const items = doc.querySelectorAll("item");
-                const feedTitle = doc.querySelector("title") ? doc.querySelector("title").textContent : "NBA";
-
-                items.forEach(item => {
-                    const source = cleanSourceName(feedTitle, url);
-                    const title = item.querySelector("title") ? item.querySelector("title").textContent : "";
-                    const link = item.querySelector("link") ? item.querySelector("link").textContent : "";
-                    const pubDate = item.querySelector("pubDate") ? new Date(item.querySelector("pubDate").textContent) : new Date();
-                    
-                    // Extraer imagen del feed RSS (media:content o enclosure)
-                    let img = item.getElementsByTagName("media:content")[0]?.getAttribute("url") || 
-                              item.querySelector("enclosure")?.getAttribute("url") || 
-                              getOfficialLogo(source) || 
-                              'https://via.placeholder.com/85x60/161e2d/38bdf8?text=NBA';
-
-                    allEntries.push({ title, link, pubDate, source, img });
-                });
-            } catch (e) { console.error("Error cargando:", url); }
+        // Usamos una técnica de "caché-busting" para obligar a los feeds a refrescarse
+        const promises = urls.map(url => {
+            const proxyUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`;
+            return fetch(proxyUrl)
+                .then(res => res.ok ? res.json() : null)
+                .then(data => {
+                    if(data && data.items) {
+                        data.items.forEach(item => {
+                            const source = cleanSourceName(data.feed.title || 'NBA', url);
+                            allEntries.push({
+                                title: item.title,
+                                link: item.link,
+                                pubDate: new Date(item.pubDate.replace(/-/g, "/")),
+                                source: source,
+                                img: item.thumbnail || item.enclosure.link || getOfficialLogo(source) || 'https://via.placeholder.com/85x60/161e2d/38bdf8?text=NBA'
+                            });
+                        });
+                    }
+                })
+                .catch(() => console.log("Fallo puntual en:", url));
         });
 
         await Promise.all(promises);
+        
+        if (allEntries.length === 0) {
+            container.innerHTML = '<div style="padding:20px; color:orange; font-size:0.8rem;">No se han podido sincronizar las noticias. Inténtalo de nuevo en unos minutos.</div>';
+            return;
+        }
+
         allEntries.sort((a, b) => b.pubDate - a.pubDate);
 
         container.innerHTML = allEntries.map(item => `
@@ -232,23 +243,10 @@
         `).join('');
     }
 
+    // Iniciar carga
     loadFeeds(CONFIG.ES, 'news-es');
     loadFeeds(CONFIG.USA, 'news-usa');
     loadFeeds(CONFIG.SUBS, 'news-subs');
-
-    // Carga de Timelines de X simplificada para evitar errores de carga local
-    document.getElementById('x-es-links').innerHTML = `
-        <a href="https://x.com/KikeGarcia41" target="_blank" class="x-link">@KikeGarcia41</a>
-        <a href="https://x.com/S_Rabinal" target="_blank" class="x-link">@S_Rabinal</a>
-        <a href="https://x.com/alejandroggoNBA" target="_blank" class="x-link">@alejandroggoNBA</a>
-    `;
-    document.getElementById('x-es-timeline').innerHTML = `<a class="twitter-timeline" data-theme="dark" href="https://twitter.com/alejandroggoNBA"></a>`;
-
-    document.getElementById('x-usa-links').innerHTML = `
-        <a href="https://x.com/ShamsCharania" target="_blank" class="x-link">@ShamsCharania</a>
-        <a href="https://x.com/TheDunkCentral" target="_blank" class="x-link">@TheDunkCentral</a>
-    `;
-    document.getElementById('x-usa-timeline').innerHTML = `<a class="twitter-timeline" data-theme="dark" href="https://twitter.com/ShamsCharania"></a>`;
 </script>
 </body>
 </html>
