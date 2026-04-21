@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NBA Intelligence Hub noX</title>
+    <title>NBA Intelligence Hub xx</title>
     <style>
         :root {
             --bg-body: #0a0f1a;
@@ -26,8 +26,7 @@
 
         .dashboard-grid {
             display: grid;
-            /* Se ajusta a 3 columnas en pantallas grandes */
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             gap: 15px;
         }
 
@@ -85,20 +84,9 @@
 <h1>🏀 NBA Intelligence Hub</h1>
 
 <div class="dashboard-grid">
-    <div class="section">
-        <div class="section-header">📝 MEDIOS ESPAÑA</div>
-        <div class="feed-container" id="news-es"></div>
-    </div>
-
-    <div class="section">
-        <div class="section-header">📝 MEDIOS USA</div>
-        <div class="feed-container" id="news-usa"></div>
-    </div>
-
-    <div class="section">
-        <div class="section-header">✉️ NEWSLETTERS</div>
-        <div class="feed-container" id="news-subs"></div>
-    </div>
+    <div class="section"><div class="section-header">📝 MEDIOS ESPAÑA</div><div class="feed-container" id="news-es"></div></div>
+    <div class="section"><div class="section-header">📝 MEDIOS USA</div><div class="feed-container" id="news-usa"></div></div>
+    <div class="section"><div class="section-header">✉️ NEWSLETTERS</div><div class="feed-container" id="news-subs"></div></div>
 </div>
 
 <script>
@@ -132,6 +120,8 @@
 
     async function loadFeeds(urls, containerId) {
         const container = document.getElementById(containerId);
+        if (!container) return;
+        
         container.innerHTML = '<div style="padding:20px; color:#555; font-size:0.8rem;">Cargando...</div>';
         let allEntries = [];
 
@@ -158,7 +148,7 @@
         await Promise.all(promises);
         allEntries.sort((a, b) => b.pubDate - a.pubDate);
 
-        container.innerHTML = allEntries.map(item => `
+        container.innerHTML = allEntries.length > 0 ? allEntries.map(item => `
             <a href="${item.link}" target="_blank" class="news-item">
                 <img src="${item.img}" class="thumb" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';">
                 <div class="news-content">
@@ -169,14 +159,14 @@
                     </div>
                 </div>
             </a>
-        `).join('');
+        `).join('') : '<div style="padding:20px; font-size:0.8rem;">No hay noticias disponibles.</div>';
     }
 
-    window.onload = () => {
+    window.addEventListener('load', () => {
         loadFeeds(CONFIG.ES, 'news-es');
         loadFeeds(CONFIG.USA, 'news-usa');
         loadFeeds(CONFIG.SUBS, 'news-subs');
-    };
+    });
 </script>
 </body>
 </html>
