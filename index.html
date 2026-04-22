@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard tuiter</title>
+<title>NBA Dashboard | X-Radar Edition 2</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -34,7 +34,6 @@ h1 {
 
 .dashboard-grid { 
     display: grid; 
-    /* Ajustado a 4 columnas */
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
     gap: 20px; padding: 0 20px 20px 20px; flex-grow: 1; 
 }
@@ -42,6 +41,7 @@ h1 {
 .section { 
     background: var(--bg-card); 
     backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 20px; 
     border: 1px solid var(--border); 
     height: 78vh; display: flex; flex-direction: column; 
@@ -66,7 +66,6 @@ h1 {
     z-index: 10;
 }
 
-/* BARRA DE PROGRESO */
 .progress-container {
     position: absolute; top: 54px; left: 0; width: 100%; height: 3px; background: transparent; z-index: 20;
 }
@@ -78,9 +77,7 @@ h1 {
 
 .feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; padding-bottom: 20px; }
 
-/* Especial para el Widget de X */
-#news-x { padding: 0; overflow-x: hidden; }
-
+/* Estilo para items de noticias (Animación Cascada) */
 .news-item { 
     display: flex; gap: 14px; padding: 18px; 
     text-decoration: none; color: inherit; 
@@ -115,6 +112,7 @@ h1 {
     cursor: pointer; box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
     z-index: 200; transition: 0.4s; border: none; font-size: 1.6rem;
 }
+.refresh-fab:hover { transform: rotate(180deg) scale(1.1); }
 
 @media (max-width: 1200px) {
     .dashboard-grid { grid-template-columns: repeat(2, 1fr); }
@@ -122,9 +120,12 @@ h1 {
 
 @media (max-width: 768px) {
     .dashboard-grid { display: block; padding: 0 10px 85px 10px; }
-    .section { display: none; height: 75vh; }
+    .section { display: none; height: 75vh; border-radius: 0; border: none; background: transparent; }
     .section.active { display: flex; }
     .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); justify-content: space-around; padding: 12px 0; z-index: 1000; }
+    .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .nav-btn.active { color: var(--accent); }
+    .refresh-fab { bottom: 95px; right: 20px; width: 50px; height: 50px; }
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -161,9 +162,16 @@ h1 {
             <img src="https://abs.twimg.com/favicons/twitter.3.ico" class="header-icon" style="filter: invert(1);">
             X-RADAR
         </div>
-        <div class="feed-container" id="news-x">
-            <a class="twitter-timeline" data-lang="es" data-theme="dark" data-chrome="noheader nofooter noborders transparent" href="https://twitter.com/i/lists/2029659731053412762?ref_src=twsrc%5Etfw">Cargando lista de X...</a> 
-            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <div class="feed-container" id="news-x" style="background: rgba(0,0,0,0.1);">
+            <div id="twitter-container" style="padding: 10px;">
+                <a class="twitter-timeline" 
+                   data-lang="es" 
+                   data-theme="dark" 
+                   data-chrome="noheader nofooter noborders transparent" 
+                   href="https://twitter.com/i/lists/2029659731053412762?ref_src=twsrc%5Etfw">
+                   Cargando radar de X...
+                </a>
+            </div>
         </div>
     </div>
 
@@ -178,13 +186,16 @@ h1 {
 </div>
 
 <div class="mobile-nav" id="m-nav" style="display: none;">
-    <button class="nav-btn active" onclick="showTab('es', this)"><span>España</span></button>
+    <button class="nav-btn active" onclick="showTab('es', this)"><span>ES</span></button>
     <button class="nav-btn" onclick="showTab('usa', this)"><span>USA</span></button>
-    <button class="nav-btn" onclick="showTab('x', this)"><span>X-Radar</span></button>
-    <button class="nav-btn" onclick="showTab('subs', this)"><span>Subs</span></button>
+    <button class="nav-btn" onclick="showTab('x', this)"><span>X-RADAR</span></button>
+    <button class="nav-btn" onclick="showTab('subs', this)"><span>SUBS</span></button>
 </div>
 
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <script>
+// Lógica de progreso
 function updateProgress(containerId, barId) {
     const container = document.getElementById(containerId);
     const bar = document.getElementById(barId);
@@ -193,6 +204,13 @@ function updateProgress(containerId, barId) {
     const height = container.scrollHeight - container.clientHeight;
     const scrolled = (winScroll / height) * 100;
     bar.style.width = scrolled + "%";
+}
+
+// Parche para Twitter
+function loadTwitterWidget() {
+    if (window.twttr && window.twttr.widgets) {
+        window.twttr.widgets.load(document.getElementById('twitter-container'));
+    }
 }
 
 const LOGOS = {
@@ -264,7 +282,7 @@ async function loadSection(urls, containerId, barId) {
             <div class="news-content">
                 <span class="news-title">${i.title}</span>
                 <div class="news-meta">
-                    <span class="source-tag" title="${i.sourceFull}">${i.sourceShort}</span>
+                    <span class="source-tag" title="Fuente: ${i.sourceFull}">${i.sourceShort}</span>
                     <span>${dStr} • ${tStr}</span>
                 </div>
             </div>
@@ -277,19 +295,21 @@ function refreshAll() {
     loadSection(CONFIG.ES, 'news-es', 'bar-es');
     loadSection(CONFIG.USA, 'news-usa', 'bar-usa');
     loadSection(CONFIG.SUBS, 'news-subs', 'bar-subs');
-    // El widget de X se refresca recargando el script o simplemente al cargar la página
+    loadTwitterWidget();
 }
 
 function showTab(type, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(`sec-${type}`).classList.add('active');
+    const target = document.getElementById(`sec-${type}`);
+    if(target) target.classList.add('active');
     btn.classList.add('active');
 }
 
 window.onload = () => {
     if(window.innerWidth <= 768) document.getElementById('m-nav').style.display = 'flex';
     refreshAll();
+    setTimeout(loadTwitterWidget, 1500);
 };
 </script>
 </body>
