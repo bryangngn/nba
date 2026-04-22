@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard | Ultimate Edition</title>
+<title>NBA Dashboard | Pro Edition</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -12,156 +12,273 @@
     --text-dim: #94a3b8; 
     --accent: #38bdf8; 
     --border: rgba(255, 255, 255, 0.08);
+    --live: #ef4444;
 }
 
 body { 
-    font-family: 'Inter', sans-serif; 
+    font-family: 'Inter', 'Segoe UI', sans-serif; 
     background: radial-gradient(circle at top right, #1e293b, #050a14);
     background-attachment: fixed;
     color: var(--text-main); 
-    margin: 0; display: flex; flex-direction: column; min-height: 100vh;
+    margin: 0; padding: 0; 
+    display: flex; flex-direction: column; 
+    min-height: 100vh;
 }
 
-h1 { text-align: center; color: var(--accent); font-size: 1.5rem; padding: 25px 0; text-transform: uppercase; letter-spacing: 4px; font-weight: 900; margin: 0; }
+h1 { 
+    text-align: center; color: var(--accent); font-size: 1.5rem; 
+    padding: 25px 0; text-transform: uppercase; letter-spacing: 4px; 
+    font-weight: 900; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    margin: 0;
+}
 
 .dashboard-grid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 20px; padding: 0 20px 20px 20px; flex-grow: 1; 
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
+    gap: 25px; padding: 0 25px 25px 25px; flex-grow: 1; 
 }
 
+/* EFECTO GLASSMORPHISM */
 .section { 
-    background: var(--bg-card); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-radius: 20px; border: 1px solid var(--border); 
-    height: 78vh; display: flex; flex-direction: column; overflow: hidden; position: relative;
+    background: var(--bg-card); 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px; 
+    border: 1px solid var(--border); 
+    height: 78vh; display: flex; flex-direction: column; 
+    overflow: hidden;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
+.section:hover { 
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.15);
+}
+
 .section-header { 
-    padding: 18px; background: rgba(30, 41, 59, 0.7); border-bottom: 1px solid var(--border); 
-    font-weight: 800; font-size: 0.85rem; text-align: center; letter-spacing: 2px; color: var(--accent);
+    padding: 18px; 
+    background: rgba(30, 41, 59, 0.7);
+    border-bottom: 1px solid var(--border); 
+    font-weight: 800; font-size: 0.85rem; text-align: center; 
+    letter-spacing: 2px; color: var(--accent);
     display: flex; align-items: center; justify-content: center; gap: 12px;
 }
 
-.feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; }
+.progress-container {
+    position: absolute; top: 54px; left: 0; width: 100%; height: 3px; background: transparent; z-index: 20;
+}
+.progress-bar {
+    height: 100%; width: 0%; background: var(--accent); box-shadow: 0 0 10px var(--accent); transition: width 0.1s ease-out;
+}
 
-/* ANIMACIÓN CASCADA */
+.header-icon { width: 22px; height: auto; border-radius: 3px; }
+
+.feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; padding-bottom: 20px; }
+
+/* ANIMACIÓN EN CASCADA */
 .news-item { 
-    display: flex; gap: 14px; padding: 18px; text-decoration: none; color: inherit; 
-    border-bottom: 1px solid var(--border); transition: 0.3s;
+    display: flex; gap: 14px; padding: 18px; 
+    text-decoration: none; color: inherit; 
+    border-bottom: 1px solid var(--border); 
+    transition: all 0.3s ease;
     opacity: 0; transform: translateY(20px);
 }
-.news-item.animate { animation: slideIn 0.5s ease forwards; }
-@keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+
+.news-item.animate {
+    animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
 .news-item:hover { background: rgba(255, 255, 255, 0.05); }
 
-.thumb { width: 80px; height: 60px; border-radius: 8px; object-fit: cover; background: #000; flex-shrink: 0; }
+.thumb { 
+    width: 95px; height: 68px; border-radius: 10px; 
+    object-fit: contain; background: #000; 
+    flex-shrink: 0; padding: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+}
 
-.news-content { flex-grow: 1; }
-.news-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; margin-bottom: 5px; display: block; }
-.news-meta { font-size: 0.7rem; color: var(--text-dim); display: flex; justify-content: space-between; }
+.news-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+.news-title { font-size: 0.92rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+.news-meta { font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); }
 
-.source-tag { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+.source-tag {
+    background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 700;
+}
 
 .refresh-fab {
-    position: fixed; right: 30px; bottom: 30px; width: 55px; height: 55px; background: var(--accent);
-    border-radius: 50%; border: none; cursor: pointer; box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4); z-index: 100; font-size: 1.5rem;
+    position: fixed; right: 35px; bottom: 35px;
+    width: 55px; height: 55px; background: var(--accent);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+    z-index: 200; transition: 0.4s; border: none; font-size: 1.6rem;
 }
+.refresh-fab:hover { transform: rotate(180deg) scale(1.1); }
+
+footer { text-align: center; padding: 25px; font-size: 0.75rem; color: var(--text-dim); }
 
 @media (max-width: 768px) {
-    .section { display: none; }
+    .dashboard-grid { display: block; padding: 0 10px 85px 10px; }
+    .section { display: none; height: 75vh; }
     .section.active { display: flex; }
-    .mobile-nav { display: flex; position: fixed; bottom: 0; width: 100%; background: #1e293b; padding: 10px 0; justify-content: space-around; z-index: 1000; }
+    .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); justify-content: space-around; padding: 12px 0; z-index: 1000; }
+    .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; }
+    .nav-btn.active { color: var(--accent); }
 }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
 </style>
 </head>
 <body>
 
 <h1>🏀 NBA Dashboard</h1>
 
-<button class="refresh-fab" onclick="refreshAll()">🔄</button>
+<button class="refresh-fab" onclick="refreshAll()" title="Refrescar noticias">🔄</button>
 
 <div class="dashboard-grid">
     <div class="section active" id="sec-es">
-        <div class="section-header">🇪🇸 ESPAÑA</div>
-        <div class="feed-container" id="news-es"></div>
+        <div class="section-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" class="header-icon"> ESPAÑA
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="bar-es"></div></div>
+        <div class="feed-container" id="news-es" onscroll="updateProgress('news-es', 'bar-es')"></div>
     </div>
+
     <div class="section" id="sec-usa">
-        <div class="section-header">🇺🇸 USA</div>
-        <div class="feed-container" id="news-usa"></div>
+        <div class="section-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" class="header-icon"> USA
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="bar-usa"></div></div>
+        <div class="feed-container" id="news-usa" onscroll="updateProgress('news-usa', 'bar-usa')"></div>
     </div>
-    <div class="section" id="sec-x">
-        <div class="section-header">🐦 X-RADAR (LIVE)</div>
-        <div class="feed-container" id="news-x"></div>
-    </div>
+
     <div class="section" id="sec-subs">
-        <div class="section-header">📩 NEWSLETTERS</div>
-        <div class="feed-container" id="news-subs"></div>
+        <div class="section-header">
+            <img src="https://www.svgrepo.com/show/532185/mail.svg" class="header-icon" style="filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%);"> NEWSLETTERS
+        </div>
+        <div class="progress-container"><div class="progress-bar" id="bar-subs"></div></div>
+        <div class="feed-container" id="news-subs" onscroll="updateProgress('news-subs', 'bar-subs')"></div>
     </div>
 </div>
 
+<footer>By <strong>Bryan García</strong> | NBA Dashboard Pro</footer>
+
+<div class="mobile-nav" id="m-nav" style="display: none;">
+    <button class="nav-btn active" onclick="showTab('es', this)"><span>ESPAÑA</span></button>
+    <button class="nav-btn" onclick="showTab('usa', this)"><span>USA</span></button>
+    <button class="nav-btn" onclick="showTab('subs', this)"><span>SUBS</span></button>
+</div>
+
 <script>
-const CONFIG = {
-    ES: ['https://www.nbamaniacs.com/feed/', 'https://www.gigantes.com/nba/feed', 'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml'],
-    USA: ['https://www.espn.com/espn/rss/nba/news', 'https://basketball.realgm.com/rss/wiretap/0/0.xml'],
-    // Usamos un bridge de Nitter para convertir la lista de X en RSS
-    X: ['https://nitter.net/i/lists/2029659731053412762/rss'], 
-    SUBS: ['https://www.nbaconcontexto.com/feed', 'https://alejandroggo.com/feed']
+function updateProgress(containerId, barId) {
+    const container = document.getElementById(containerId);
+    const bar = document.getElementById(barId);
+    const scrolled = (container.scrollTop / (container.scrollHeight - container.clientHeight)) * 100;
+    bar.style.width = scrolled + "%";
+}
+
+const LOGOS = {
+    'MARCA': 'https://play-lh.googleusercontent.com/pap31KXKXxCEjD5_Gp4hsBRS-_dqtdyt7n_k8TbwgPpKZLPUt1ISOTkqknNkqVF_JA',
+    'AS': 'https://dralbertomarques.com/wp-content/uploads/2018/07/diario-as-logo.png',
+    'MUNDO DEPORTIVO': 'https://yt3.googleusercontent.com/ytc/AIdro_nrOoV6h3uwn9ibMng6T7G1_KiAmm6aryUC6ET-CqRJv9g=s900-c-k-c0x00ffffff-no-rj',
+    'SPORT': 'https://play-lh.googleusercontent.com/IOv18_vqmMbEhETpb4wFIrskC2VyTEqeL8fi51BqYXLy9y4zm-2MjcuYveq4ob9GoV9p',
+    'NBA MANIACS': 'https://pbs.twimg.com/profile_images/1891114075666407424/eqdnOr7G_400x400.jpg',
+    'GIGANTES': 'https://yt3.googleusercontent.com/ytc/AIdro_n1bU-xv4h6TkWsAeMQyvSWmb4eOeEMqMzNFQRRcduzjno=s900-c-k-c0x00ffffff-no-rj',
+    'ESPN': 'https://espnpressroom.com/us/files/2018/03/App-Icon-iOS-150x150.png',
+    'YAHOO! SPORTS': 'https://static.wikia.nocookie.net/logopedia/images/1/19/Yahoosports.jpg',
+    'HOOPS RUMORS': 'https://cdn.mlbtraderumors.com/files/old/6a00d834515b9a69e2016300dc5dae970d-pi.jpg',
+    'HOOPS WIRE': 'https://i0.wp.com/hoopswire.com/wp-content/uploads/2025/06/hoopswire.jpg',
+    'CBS SPORTS': 'https://sports.cbsimg.net/images/cbss/ui5/cbssportsv2_200x200.png',
+    'REALGM': 'https://play-lh.googleusercontent.com/KwTsScdBMdnuBa5lvQFParYv7h5QesoixFL-K9P8E-SgI8pLyyR1U4WXPWCT7FV9_8g'
 };
 
-async function loadSection(urls, containerId) {
+const CONFIG = {
+    ES: ['https://www.nbamaniacs.com/feed/', 'https://www.gigantes.com/nba/feed', 'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml', 'https://www.mundodeportivo.com/feed/rss/baloncesto/nba', 'https://www.sport.es/es/rss/nba/rss.xml', 'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/'],
+    USA: ['https://www.espn.com/espn/rss/nba/news', 'https://www.cbssports.com/rss/headlines/nba/', 'https://basketball.realgm.com/rss/wiretap/0/0.xml', 'https://www.hoopsrumors.com/feed', 'https://hoopswire.com/feed/', 'https://sports.yahoo.com/nba/rss/'],
+    SUBS: ['https://www.nbaconcontexto.com/feed', 'https://alejandroggo.com/feed', 'https://marcstein.substack.com/feed', 'https://www.roycewebb.com/feed', 'https://www.tomthefinder.com/feed', 'https://www.basketballintelligence.net/feed', 'https://www.truehoop.com/feed']
+};
+
+function cleanName(u) {
+    const l = u.toLowerCase();
+    if (l.includes('marca.com') || l.includes('uecdn.es')) return 'MARCA'; 
+    if (l.includes('mundodeportivo')) return 'MUNDO DEPORTIVO';
+    if (l.includes('sport.es')) return 'SPORT';
+    if (l.includes('as.com')) return 'AS';
+    if (l.includes('gigantes.com')) return 'GIGANTES';
+    if (l.includes('nbamaniacs')) return 'NBA MANIACS';
+    if (l.includes('yahoo.com')) return 'YAHOO! SPORTS';
+    if (l.includes('espn')) return 'ESPN';
+    if (l.includes('cbssports')) return 'CBS SPORTS';
+    if (l.includes('realgm')) return 'REALGM';
+    if (l.includes('hoopsrumors')) return 'HOOPS RUMORS';
+    if (l.includes('hoopswire')) return 'HOOPS WIRE';
+    return "NBA";
+}
+
+async function loadSection(urls, containerId, barId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = '<div style="padding:20px;text-align:center;opacity:0.5;">Cargando...</div>';
-    
+    container.innerHTML = '<div style="padding:40px; text-align:center; opacity:0.5; font-size:0.8rem;">Sincronizando...</div>';
     let allItems = [];
     const promises = urls.map(async (url) => {
         try {
-            // Usamos un proxy para evitar bloqueos y convertir RSS a JSON
-            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&api_key=oyeb99p6z8z4vcl9ptf4mqu7v5g2u7quun8vhkky`);
+            const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`);
             const data = await res.json();
             if (data.status === 'ok') {
+                const sName = cleanName(url);
                 data.items.forEach(item => {
                     allItems.push({
-                        title: item.title.substring(0, 120) + (item.title.length > 120 ? '...' : ''),
-                        link: item.link,
-                        date: new Date(item.pubDate),
-                        source: data.feed.title.substring(0, 15),
-                        img: item.thumbnail || item.enclosure?.link || 'https://via.placeholder.com/80x60/161e2d/38bdf8?text=NBA'
+                        title: item.title, link: item.link, date: new Date(item.pubDate), 
+                        sourceShort: sName, sourceFull: data.feed.title || sName,
+                        img: LOGOS[sName] || item.thumbnail || (item.enclosure && item.enclosure.link) || ""
                     });
                 });
             }
-        } catch (e) { console.error("Error en feed:", url); }
+        } catch (e) {}
     });
-
     await Promise.all(promises);
     allItems.sort((a, b) => b.date - a.date);
-
-    container.innerHTML = allItems.slice(0, 30).map((i, idx) => `
-        <a href="${i.link}" target="_blank" class="news-item" style="animation-delay: ${idx * 0.05}s">
-            <img src="${i.img}" class="thumb">
+    container.innerHTML = allItems.map((i, index) => {
+        const dStr = i.date.toLocaleDateString([], {day:'2-digit', month:'short'});
+        const tStr = i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+        return `
+        <a href="${i.link}" target="_blank" class="news-item" style="animation-delay: ${index * 0.05}s">
+            <img src="${i.img || 'https://via.placeholder.com/90x65/161e2d/38bdf8?text=NBA'}" class="thumb">
             <div class="news-content">
                 <span class="news-title">${i.title}</span>
                 <div class="news-meta">
-                    <span class="source-tag">${i.source}</span>
-                    <span>${i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</span>
+                    <span class="source-tag" title="${i.sourceFull}">${i.sourceShort}</span>
+                    <span>${dStr} • ${tStr}</span>
                 </div>
             </div>
-        </a>
-    `).join('');
-
-    setTimeout(() => {
-        container.querySelectorAll('.news-item').forEach(el => el.classList.add('animate'));
-    }, 50);
+        </a>`;
+    }).join('');
+    setTimeout(() => { container.querySelectorAll('.news-item').forEach(item => item.classList.add('animate')); }, 50);
 }
 
 function refreshAll() {
-    loadSection(CONFIG.ES, 'news-es');
-    loadSection(CONFIG.USA, 'news-usa');
-    loadSection(CONFIG.X, 'news-x');
-    loadSection(CONFIG.SUBS, 'news-subs');
+    loadSection(CONFIG.ES, 'news-es', 'bar-es');
+    loadSection(CONFIG.USA, 'news-usa', 'bar-usa');
+    loadSection(CONFIG.SUBS, 'news-subs', 'bar-subs');
 }
 
-window.onload = refreshAll;
+function showTab(type, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(`sec-${type}`).classList.add('active');
+    btn.classList.add('active');
+}
+
+window.onload = () => {
+    if(window.innerWidth <= 768) document.getElementById('m-nav').style.display = 'flex';
+    refreshAll();
+};
 </script>
 </body>
 </html>
