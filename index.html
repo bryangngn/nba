@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Intelligence Hub logos</title>
+<title>NBA Intelligence Hub new logos</title>
 <style>
 :root { --bg-body: #0a0f1a; --bg-card: #161e2d; --text-main: #e2e8f0; --text-dim: #94a3b8; --accent: #38bdf8; --border: #2d3748; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 10px; }
@@ -35,7 +35,7 @@ h1 { text-align: center; color: var(--accent); font-size: 1.2rem; margin: 10px 0
 const FALLBACK = "data:image/svg+xml;charset=UTF-8,%3Csvg width='85' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='100%25' height='100%25' fill='%23161e2d'/%3E%3Ctext x='50%25' y='50%25' font-family='sans-serif' font-size='10' fill='%2338bdf8' text-anchor='middle' dy='.3em'%3ENBA%3C/text%3E%3C/svg%3E";
 
 const LOGOS = {
-    'MARCA': 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Marca_logo.svg/2560px-Marca_logo.svg.png', // Logo marca para mayor claridad
+    'MARCA': 'https://play-lh.googleusercontent.com/pap31KXKXxCEjD5_Gp4hsBRS-_dqtdyt7n_k8TbwgPpKZLPUt1ISOTkqknNkqVF_JA',
     'AS': 'https://dralbertomarques.com/wp-content/uploads/2018/07/diario-as-logo.png',
     'MUNDO DEPORTIVO': 'https://yt3.googleusercontent.com/ytc/AIdro_nrOoV6h3uwn9ibMng6T7G1_KiAmm6aryUC6ET-CqRJv9g=s900-c-k-c0x00ffffff-no-rj',
     'SPORT': 'https://play-lh.googleusercontent.com/IOv18_vqmMbEhETpb4wFIrskC2VyTEqeL8fi51BqYXLy9y4zm-2MjcuYveq4ob9GoV9p',
@@ -44,7 +44,9 @@ const LOGOS = {
     'ESPN': 'https://espnpressroom.com/us/files/2018/03/App-Icon-iOS-150x150.png',
     'YAHOO! SPORTS': 'https://static.wikia.nocookie.net/logopedia/images/1/19/Yahoosports.jpg',
     'HOOPS RUMORS': 'https://cdn.mlbtraderumors.com/files/old/6a00d834515b9a69e2016300dc5dae970d-pi.jpg',
-    'HOOPS WIRE': 'https://i0.wp.com/hoopswire.com/wp-content/uploads/2025/06/hoopswire.jpg'
+    'HOOPS WIRE': 'https://i0.wp.com/hoopswire.com/wp-content/uploads/2025/06/hoopswire.jpg',
+    'CBS SPORTS': 'https://sports.cbsimg.net/images/cbss/ui5/cbssportsv2_200x200.png',
+    'REALGM': 'https://play-lh.googleusercontent.com/KwTsScdBMdnuBa5lvQFParYv7h5QesoixFL-K9P8E-SgI8pLyyR1U4WXPWCT7FV9_8g'
 };
 
 const CONFIG = {
@@ -55,7 +57,6 @@ const CONFIG = {
 
 function cleanName(u) {
     const l = u.toLowerCase();
-    // Prioridad a Marca para evitar el nombre genérico "NBA" que viene en su RSS
     if (l.includes('marca.com') || l.includes('uecdn.es')) return 'MARCA'; 
     if (l.includes('mundodeportivo')) return 'MUNDO DEPORTIVO';
     if (l.includes('sport.es')) return 'SPORT';
