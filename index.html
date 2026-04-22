@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard newslet</title>
+<title>NBA Dashboard effect</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -30,10 +30,28 @@ h1 {
     font-weight: 900; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
 }
 
+/* LÓGICA DE LECTURA ENFOCADA */
 .dashboard-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
     gap: 20px; padding: 0 20px 20px 20px; flex-grow: 1; 
+}
+
+/* Si el grid tiene el foco en alguna sección, atenuamos el resto */
+.dashboard-grid:hover .section {
+    opacity: 0.35;
+    filter: grayscale(0.5) blur(1px);
+    transform: scale(0.98);
+}
+
+/* La sección sobre la que está el ratón se mantiene resaltada */
+.dashboard-grid .section:hover {
+    opacity: 1 !important;
+    filter: none !important;
+    transform: scale(1.02);
+    border-color: var(--accent);
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
+    z-index: 10;
 }
 
 .section { 
@@ -43,10 +61,8 @@ h1 {
     border: 1px solid var(--border); 
     height: 78vh; display: flex; flex-direction: column; 
     overflow: hidden;
-    transition: border-color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Transición suave */
 }
-
-.section:hover { border-color: rgba(56, 189, 248, 0.3); }
 
 .section-header { 
     padding: 16px; 
@@ -57,9 +73,7 @@ h1 {
     display: flex; align-items: center; justify-content: center; gap: 12px;
 }
 
-/* Estilo para los iconos SVG */
 .header-icon { width: 22px; height: auto; border-radius: 3px; display: block; }
-/* Filtro para que el SVG de la newsletter sea del color azul acento */
 .newsletter-svg { filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%); }
 
 .feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; }
@@ -69,10 +83,7 @@ h1 {
     text-decoration: none; color: inherit; 
     border-bottom: 1px solid var(--border); 
     transition: all 0.2s ease;
-    animation: fadeIn 0.5s ease forwards;
 }
-
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
 .news-item:hover { background: rgba(255, 255, 255, 0.03); padding-left: 18px; }
 
@@ -85,7 +96,6 @@ h1 {
 
 .news-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
 .news-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
-
 .news-meta { font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); }
 
 .live-dot {
@@ -108,15 +118,15 @@ footer { text-align: center; padding: 20px; font-size: 0.75rem; color: var(--tex
 footer strong { color: var(--accent); }
 
 @media (max-width: 768px) {
+    /* Desactivamos el efecto de enfoque en móvil para no interferir con el scroll táctil */
+    .dashboard-grid:hover .section { opacity: 1; filter: none; transform: none; }
     .dashboard-grid { display: block; padding: 0 10px 80px 10px; }
     .section { display: none; height: 78vh; border-radius: 0; border: none; background: transparent; }
     .section.active { display: flex; }
     .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-    .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: color 0.3s; }
+    .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .nav-btn.active { color: var(--accent); }
     .nav-btn .nav-icon { width: 18px; margin-bottom: 2px; }
-    .nav-btn.active .newsletter-svg { filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%); }
-    .nav-btn:not(.active) .newsletter-svg { filter: brightness(0) invert(0.7); } /* Gris para el estado inactivo */
     .refresh-fab { bottom: 85px; right: 20px; width: 45px; height: 45px; }
 }
 
@@ -174,7 +184,6 @@ footer strong { color: var(--accent); }
 </div>
 
 <script>
-// El JS se mantiene exactamente igual...
 const LOGOS = {
     'MARCA': 'https://play-lh.googleusercontent.com/pap31KXKXxCEjD5_Gp4hsBRS-_dqtdyt7n_k8TbwgPpKZLPUt1ISOTkqknNkqVF_JA',
     'AS': 'https://dralbertomarques.com/wp-content/uploads/2018/07/diario-as-logo.png',
@@ -254,14 +263,12 @@ async function loadSection(urls, containerId) {
 
     await Promise.all(promises);
     allItems.sort((a, b) => b.date - a.date);
-
     const now = new Date();
 
     container.innerHTML = allItems.map(i => {
         const isNew = (now - i.date) < 3600000;
         const dStr = i.date.toLocaleDateString([], {day:'2-digit', month:'short'});
         const tStr = i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        
         return `
         <a href="${i.link}" target="_blank" class="news-item">
             <img src="${i.img || 'https://via.placeholder.com/90x65/161e2d/38bdf8?text=NBA'}" class="thumb">
