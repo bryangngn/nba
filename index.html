@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard sn2</title>
+<title>NBA Dashboard undo</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -50,6 +50,12 @@ h1 {
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
+.section:hover { 
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.15);
+}
+
 .section-header { 
     padding: 18px; 
     background: rgba(30, 41, 59, 0.7);
@@ -78,9 +84,13 @@ h1 {
     opacity: 0; transform: translateY(20px);
 }
 
-.news-item.animate { animation: slideIn 0.5s ease forwards; }
+.news-item.animate {
+    animation: slideIn 0.5s ease forwards;
+}
 
-@keyframes slideIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+}
 
 .news-item:hover { background: rgba(255, 255, 255, 0.05); }
 
@@ -95,7 +105,9 @@ h1 {
 .news-title { font-size: 0.92rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
 .news-meta { font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); }
 
-.source-tag { background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 700; }
+.source-tag {
+    background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 700;
+}
 
 .refresh-fab {
     position: fixed; right: 35px; bottom: 35px;
@@ -105,7 +117,13 @@ h1 {
     z-index: 200; transition: 0.4s; border: none; font-size: 1.6rem;
 }
 
-footer { text-align: center; padding: 25px; font-size: 0.75rem; color: var(--text-dim); letter-spacing: 1px; }
+footer { 
+    text-align: center; 
+    padding: 25px; 
+    font-size: 0.75rem; 
+    color: var(--text-dim); 
+    letter-spacing: 1px;
+}
 
 @media (max-width: 768px) {
     .dashboard-grid { display: block; padding: 0 10px 85px 10px; }
@@ -175,7 +193,6 @@ const LOGOS = {
     'SPORT': 'https://play-lh.googleusercontent.com/IOv18_vqmMbEhETpb4wFIrskC2VyTEqeL8fi51BqYXLy9y4zm-2MjcuYveq4ob9GoV9p',
     'NBA MANIACS': 'https://pbs.twimg.com/profile_images/1891114075666407424/eqdnOr7G_400x400.jpg',
     'GIGANTES': 'https://yt3.googleusercontent.com/ytc/AIdro_n1bU-xv4h6TkWsAeMQyvSWmb4eOeEMqMzNFQRRcduzjno=s900-c-k-c0x00ffffff-no-rj',
-    'SPORTING NEWS': 'https://pbs.twimg.com/profile_images/1488201224394457092/kpcLGdKH_400x400.png',
     'ESPN': 'https://espnpressroom.com/us/files/2018/03/App-Icon-iOS-150x150.png',
     'YAHOO! SPORTS': 'https://static.wikia.nocookie.net/logopedia/images/1/19/Yahoosports.jpg',
     'HOOPS RUMORS': 'https://cdn.mlbtraderumors.com/files/old/6a00d834515b9a69e2016300dc5dae970d-pi.jpg',
@@ -185,15 +202,7 @@ const LOGOS = {
 };
 
 const CONFIG = {
-    ES: [
-        'https://www.nbamaniacs.com/feed/', 
-        'https://www.gigantes.com/nba/feed', 
-        'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml', 
-        'https://www.mundodeportivo.com/feed/rss/baloncesto/nba', 
-        'https://www.sport.es/es/rss/nba/rss.xml', 
-        'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/',
-        'https://rss.app/feeds/v1.1/3bQn0XKxQqVvQK6m.xml'
-    ],
+    ES: ['https://www.nbamaniacs.com/feed/', 'https://www.gigantes.com/nba/feed', 'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml', 'https://www.mundodeportivo.com/feed/rss/baloncesto/nba', 'https://www.sport.es/es/rss/nba/rss.xml', 'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/'],
     USA: ['https://www.espn.com/espn/rss/nba/news', 'https://www.cbssports.com/rss/headlines/nba/', 'https://basketball.realgm.com/rss/wiretap/0/0.xml', 'https://www.hoopsrumors.com/feed', 'https://hoopswire.com/feed/', 'https://sports.yahoo.com/nba/rss/'],
     SUBS: ['https://www.nbaconcontexto.com/feed', 'https://alejandroggo.com/feed', 'https://marcstein.substack.com/feed', 'https://www.roycewebb.com/feed', 'https://www.tomthefinder.com/feed', 'https://www.basketballintelligence.net/feed', 'https://www.truehoop.com/feed']
 };
@@ -206,7 +215,6 @@ function cleanName(u) {
     if (l.includes('as.com')) return 'AS';
     if (l.includes('gigantes.com')) return 'GIGANTES';
     if (l.includes('nbamaniacs')) return 'NBA MANIACS';
-    if (l.includes('3bqn0xkxqqvvqk6m') || l.includes('sportingnews')) return 'SPORTING NEWS';
     if (l.includes('yahoo.com')) return 'YAHOO! SPORTS';
     if (l.includes('espn')) return 'ESPN';
     if (l.includes('cbssports')) return 'CBS SPORTS';
@@ -222,44 +230,28 @@ async function loadSection(urls, containerId, barId) {
     let allItems = [];
     const promises = urls.map(async (url) => {
         try {
-            // Se añade un API key público o rotación para evitar bloqueos si fuera necesario
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`);
             const data = await res.json();
             if (data.status === 'ok') {
                 const sName = cleanName(url);
                 data.items.forEach(item => {
-                    // Mejora en la captura de imágenes para feeds de rss.app
-                    let itemImg = LOGOS[sName];
-                    if (item.thumbnail) itemImg = item.thumbnail;
-                    else if (item.enclosure && item.enclosure.link) itemImg = item.enclosure.link;
-                    else if (item.content && item.content.match(/src="([^"]+)"/)) itemImg = item.content.match(/src="([^"]+)"/)[1];
-
                     allItems.push({
-                        title: item.title, 
-                        link: item.link, 
-                        date: new Date(item.pubDate), 
-                        sourceShort: sName, 
-                        sourceFull: data.feed.title || sName,
-                        img: itemImg
+                        title: item.title, link: item.link, date: new Date(item.pubDate), 
+                        sourceShort: sName, sourceFull: data.feed.title || sName,
+                        img: LOGOS[sName] || item.thumbnail || (item.enclosure && item.enclosure.link) || ""
                     });
                 });
             }
-        } catch (e) { console.error("Error cargando feed:", url); }
+        } catch (e) {}
     });
     await Promise.all(promises);
     allItems.sort((a, b) => b.date - a.date);
-    
-    if (allItems.length === 0) {
-        container.innerHTML = '<div style="padding:40px; text-align:center; opacity:0.5; font-size:0.8rem;">No hay noticias recientes.</div>';
-        return;
-    }
-
     container.innerHTML = allItems.map((i, index) => {
         const dStr = i.date.toLocaleDateString([], {day:'2-digit', month:'short'});
         const tStr = i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         return `
         <a href="${i.link}" target="_blank" class="news-item" style="animation-delay: ${index * 0.05}s">
-            <img src="${i.img || 'https://via.placeholder.com/90x65/161e2d/38bdf8?text=NBA'}" class="thumb" onerror="this.src='https://via.placeholder.com/90x65/161e2d/38bdf8?text=NBA'">
+            <img src="${i.img || 'https://via.placeholder.com/90x65/161e2d/38bdf8?text=NBA'}" class="thumb">
             <div class="news-content">
                 <span class="news-title">${i.title}</span>
                 <div class="news-meta">
