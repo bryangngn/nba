@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard gem</title>
+<title>NBA Dashboard</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -72,8 +72,6 @@ h1 {
     height: 100%; width: 0%; background: var(--accent); box-shadow: 0 0 10px var(--accent); transition: width 0.1s ease-out;
 }
 
-.header-icon { width: 22px; height: auto; border-radius: 3px; }
-
 .feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; padding-bottom: 20px; }
 
 .news-item { 
@@ -116,9 +114,14 @@ h1 {
     cursor: pointer; box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
     z-index: 200; transition: 0.4s; border: none; font-size: 1.6rem;
 }
-.refresh-fab:hover { transform: rotate(180deg) scale(1.1); }
 
-footer { text-align: center; padding: 25px; font-size: 0.75rem; color: var(--text-dim); }
+footer { 
+    text-align: center; 
+    padding: 25px; 
+    font-size: 0.75rem; 
+    color: var(--text-dim); 
+    letter-spacing: 1px;
+}
 
 @media (max-width: 768px) {
     .dashboard-grid { display: block; padding: 0 10px 85px 10px; }
@@ -141,31 +144,25 @@ footer { text-align: center; padding: 25px; font-size: 0.75rem; color: var(--tex
 
 <div class="dashboard-grid">
     <div class="section active" id="sec-es">
-        <div class="section-header">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" class="header-icon"> ESPAÑA
-        </div>
+        <div class="section-header">🇪🇸 ESPAÑA</div>
         <div class="progress-container"><div class="progress-bar" id="bar-es"></div></div>
         <div class="feed-container" id="news-es" onscroll="updateProgress('news-es', 'bar-es')"></div>
     </div>
 
     <div class="section" id="sec-usa">
-        <div class="section-header">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" class="header-icon"> USA
-        </div>
+        <div class="section-header">🇺🇸 USA</div>
         <div class="progress-container"><div class="progress-bar" id="bar-usa"></div></div>
         <div class="feed-container" id="news-usa" onscroll="updateProgress('news-usa', 'bar-usa')"></div>
     </div>
 
     <div class="section" id="sec-subs">
-        <div class="section-header">
-            <img src="https://www.svgrepo.com/show/532185/mail.svg" class="header-icon" style="filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%);"> NEWSLETTERS
-        </div>
+        <div class="section-header">📩 NEWSLETTERS</div>
         <div class="progress-container"><div class="progress-bar" id="bar-subs"></div></div>
         <div class="feed-container" id="news-subs" onscroll="updateProgress('news-subs', 'bar-subs')"></div>
     </div>
 </div>
 
-<footer>Hecho por <strong>Gemini</strong></footer>
+<footer>Ideado por el usuario &bull; Desarrollado por <strong>Gemini</strong></footer>
 
 <div class="mobile-nav" id="m-nav" style="display: none;">
     <button class="nav-btn active" onclick="showTab('es', this)"><span>ESPAÑA</span></button>
