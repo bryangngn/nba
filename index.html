@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard | X-Radar Edition 2</title>
+<title>NBA Dashboard tiutern</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -77,7 +77,6 @@ h1 {
 
 .feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; padding-bottom: 20px; }
 
-/* Estilo para items de noticias (Animación Cascada) */
 .news-item { 
     display: flex; gap: 14px; padding: 18px; 
     text-decoration: none; color: inherit; 
@@ -141,8 +140,7 @@ h1 {
 <div class="dashboard-grid">
     <div class="section active" id="sec-es">
         <div class="section-header">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" class="header-icon">
-            ESPAÑA
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" class="header-icon"> ESPAÑA
         </div>
         <div class="progress-container"><div class="progress-bar" id="bar-es"></div></div>
         <div class="feed-container" id="news-es" onscroll="updateProgress('news-es', 'bar-es')"></div>
@@ -150,8 +148,7 @@ h1 {
 
     <div class="section" id="sec-usa">
         <div class="section-header">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" class="header-icon">
-            USA
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" class="header-icon"> USA
         </div>
         <div class="progress-container"><div class="progress-bar" id="bar-usa"></div></div>
         <div class="feed-container" id="news-usa" onscroll="updateProgress('news-usa', 'bar-usa')"></div>
@@ -159,17 +156,14 @@ h1 {
 
     <div class="section" id="sec-x">
         <div class="section-header">
-            <img src="https://abs.twimg.com/favicons/twitter.3.ico" class="header-icon" style="filter: invert(1);">
-            X-RADAR
+            <img src="https://abs.twimg.com/favicons/twitter.3.ico" class="header-icon" style="filter: invert(1);"> X-RADAR
         </div>
-        <div class="feed-container" id="news-x" style="background: rgba(0,0,0,0.1);">
+        <div class="feed-container" id="news-x" style="background: rgba(0,0,0,0.15);">
             <div id="twitter-container" style="padding: 10px;">
                 <a class="twitter-timeline" 
-                   data-lang="es" 
-                   data-theme="dark" 
-                   data-chrome="noheader nofooter noborders transparent" 
+                   data-lang="es" data-theme="dark" data-chrome="noheader nofooter noborders transparent" 
                    href="https://twitter.com/i/lists/2029659731053412762?ref_src=twsrc%5Etfw">
-                   Cargando radar de X...
+                   Iniciando radar...
                 </a>
             </div>
         </div>
@@ -177,8 +171,7 @@ h1 {
 
     <div class="section" id="sec-subs">
         <div class="section-header">
-            <img src="https://www.svgrepo.com/show/532185/mail.svg" class="header-icon" style="filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%);">
-            SUBS
+            <img src="https://www.svgrepo.com/show/532185/mail.svg" class="header-icon" style="filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%);"> SUBS
         </div>
         <div class="progress-container"><div class="progress-bar" id="bar-subs"></div></div>
         <div class="feed-container" id="news-subs" onscroll="updateProgress('news-subs', 'bar-subs')"></div>
@@ -195,22 +188,30 @@ h1 {
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <script>
-// Lógica de progreso
+// SILENCIAR ERRORES DE EXTENSIONES
+window.addEventListener('error', function(e) {
+    if (e.filename && e.filename.includes('web-client-content-script')) {
+        e.stopImmediatePropagation();
+        return false;
+    }
+}, true);
+
 function updateProgress(containerId, barId) {
     const container = document.getElementById(containerId);
     const bar = document.getElementById(barId);
     if(!bar) return;
-    const winScroll = container.scrollTop;
-    const height = container.scrollHeight - container.clientHeight;
-    const scrolled = (winScroll / height) * 100;
+    const scrolled = (container.scrollTop / (container.scrollHeight - container.clientHeight)) * 100;
     bar.style.width = scrolled + "%";
 }
 
-// Parche para Twitter
 function loadTwitterWidget() {
-    if (window.twttr && window.twttr.widgets) {
-        window.twttr.widgets.load(document.getElementById('twitter-container'));
-    }
+    try {
+        const container = document.getElementById('twitter-container');
+        if (container && window.twttr && window.twttr.widgets) {
+            container.innerHTML = `<a class="twitter-timeline" data-lang="es" data-theme="dark" data-chrome="noheader nofooter noborders transparent" href="https://twitter.com/i/lists/2029659731053412762?ref_src=twsrc%5Etfw">Cargando radar...</a>`;
+            window.twttr.widgets.load(container);
+        }
+    } catch (e) { console.warn("X-Radar blocked by extension"); }
 }
 
 const LOGOS = {
@@ -253,7 +254,7 @@ function cleanName(u) {
 
 async function loadSection(urls, containerId, barId) {
     const container = document.getElementById(containerId);
-    container.innerHTML = '<div style="padding:40px; text-align:center; opacity:0.5; font-size:0.8rem;">Sincronizando...</div>';
+    container.innerHTML = '<div style="padding:40px; text-align:center; opacity:0.5; font-size:0.8rem;">Sincronizando señales...</div>';
     let allItems = [];
     const promises = urls.map(async (url) => {
         try {
@@ -295,21 +296,20 @@ function refreshAll() {
     loadSection(CONFIG.ES, 'news-es', 'bar-es');
     loadSection(CONFIG.USA, 'news-usa', 'bar-usa');
     loadSection(CONFIG.SUBS, 'news-subs', 'bar-subs');
-    loadTwitterWidget();
+    setTimeout(loadTwitterWidget, 500);
 }
 
 function showTab(type, btn) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    const target = document.getElementById(`sec-${type}`);
-    if(target) target.classList.add('active');
+    document.getElementById(`sec-${type}`).classList.add('active');
     btn.classList.add('active');
 }
 
 window.onload = () => {
     if(window.innerWidth <= 768) document.getElementById('m-nav').style.display = 'flex';
     refreshAll();
-    setTimeout(loadTwitterWidget, 1500);
+    setTimeout(loadTwitterWidget, 2000);
 };
 </script>
 </body>
