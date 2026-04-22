@@ -210,12 +210,14 @@ const CONFIG = {
 
 function cleanName(u) {
     const l = u.toLowerCase();
+    // España
     if (l.includes('marca.com') || l.includes('uecdn.es')) return 'MARCA'; 
     if (l.includes('mundodeportivo')) return 'MUNDO DEPORTIVO';
     if (l.includes('sport.es')) return 'SPORT';
     if (l.includes('as.com')) return 'AS';
     if (l.includes('gigantes.com')) return 'GIGANTES';
     if (l.includes('nbamaniacs')) return 'NBA MANIACS';
+    // USA
     if (l.includes('sportando')) return 'SPORTANDO';
     if (l.includes('yahoo.com')) return 'YAHOO! SPORTS';
     if (l.includes('espn')) return 'ESPN';
@@ -223,6 +225,15 @@ function cleanName(u) {
     if (l.includes('realgm')) return 'REALGM';
     if (l.includes('hoopsrumors')) return 'HOOPS RUMORS';
     if (l.includes('hoopswire')) return 'HOOPS WIRE';
+    // Newsletters
+    if (l.includes('nbaconcontexto')) return 'NBA CON CONTEXTO';
+    if (l.includes('alejandroggo')) return 'ALEJANDRO GGO';
+    if (l.includes('marcstein')) return 'MARC STEIN';
+    if (l.includes('roycewebb')) return 'ROYCE WEBB';
+    if (l.includes('tomthefinder')) return 'THE FINDER';
+    if (l.includes('basketballintelligence')) return 'BASKETBALL INTELLIGENCE';
+    if (l.includes('truehoop')) return 'TRUEHOOP';
+    
     return "NBA";
 }
 
