@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard effect</title>
+<title>NBA Dashboard progres</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -30,28 +30,10 @@ h1 {
     font-weight: 900; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
 }
 
-/* LÓGICA DE LECTURA ENFOCADA */
 .dashboard-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
     gap: 20px; padding: 0 20px 20px 20px; flex-grow: 1; 
-}
-
-/* Si el grid tiene el foco en alguna sección, atenuamos el resto */
-.dashboard-grid:hover .section {
-    opacity: 0.35;
-    filter: grayscale(0.5) blur(1px);
-    transform: scale(0.98);
-}
-
-/* La sección sobre la que está el ratón se mantiene resaltada */
-.dashboard-grid .section:hover {
-    opacity: 1 !important;
-    filter: none !important;
-    transform: scale(1.02);
-    border-color: var(--accent);
-    box-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
-    z-index: 10;
 }
 
 .section { 
@@ -61,16 +43,38 @@ h1 {
     border: 1px solid var(--border); 
     height: 78vh; display: flex; flex-direction: column; 
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Transición suave */
+    position: relative;
+    transition: border-color 0.3s ease;
 }
+
+.section:hover { border-color: rgba(56, 189, 248, 0.3); }
 
 .section-header { 
     padding: 16px; 
-    background: rgba(30, 41, 59, 0.6);
+    background: rgba(30, 41, 59, 0.8);
     border-bottom: 1px solid var(--border); 
     font-weight: 800; font-size: 0.85rem; text-align: center; 
     letter-spacing: 2px; color: var(--accent);
     display: flex; align-items: center; justify-content: center; gap: 12px;
+    z-index: 10;
+}
+
+/* BARRA DE PROGRESO DE LECTURA */
+.progress-container {
+    position: absolute;
+    top: 51px; /* Justo debajo del header */
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: transparent;
+    z-index: 20;
+}
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+    transition: width 0.1s ease-out;
 }
 
 .header-icon { width: 22px; height: auto; border-radius: 3px; display: block; }
@@ -84,7 +88,6 @@ h1 {
     border-bottom: 1px solid var(--border); 
     transition: all 0.2s ease;
 }
-
 .news-item:hover { background: rgba(255, 255, 255, 0.03); padding-left: 18px; }
 
 .thumb { 
@@ -118,8 +121,6 @@ footer { text-align: center; padding: 20px; font-size: 0.75rem; color: var(--tex
 footer strong { color: var(--accent); }
 
 @media (max-width: 768px) {
-    /* Desactivamos el efecto de enfoque en móvil para no interferir con el scroll táctil */
-    .dashboard-grid:hover .section { opacity: 1; filter: none; transform: none; }
     .dashboard-grid { display: block; padding: 0 10px 80px 10px; }
     .section { display: none; height: 78vh; border-radius: 0; border: none; background: transparent; }
     .section.active { display: flex; }
@@ -146,21 +147,24 @@ footer strong { color: var(--accent); }
             <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" class="header-icon">
             ESPAÑA
         </div>
-        <div class="feed-container" id="news-es"></div>
+        <div class="progress-container"><div class="progress-bar" id="bar-es"></div></div>
+        <div class="feed-container" id="news-es" onscroll="updateProgress('news-es', 'bar-es')"></div>
     </div>
     <div class="section" id="sec-usa">
         <div class="section-header">
             <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" class="header-icon">
             USA
         </div>
-        <div class="feed-container" id="news-usa"></div>
+        <div class="progress-container"><div class="progress-bar" id="bar-usa"></div></div>
+        <div class="feed-container" id="news-usa" onscroll="updateProgress('news-usa', 'bar-usa')"></div>
     </div>
     <div class="section" id="sec-subs">
         <div class="section-header">
             <img src="https://www.svgrepo.com/show/532185/mail.svg" class="header-icon newsletter-svg">
             NEWSLETTERS
         </div>
-        <div class="feed-container" id="news-subs"></div>
+        <div class="progress-container"><div class="progress-bar" id="bar-subs"></div></div>
+        <div class="feed-container" id="news-subs" onscroll="updateProgress('news-subs', 'bar-subs')"></div>
     </div>
 </div>
 
@@ -184,6 +188,16 @@ footer strong { color: var(--accent); }
 </div>
 
 <script>
+// LÓGICA DE PROGRESO
+function updateProgress(containerId, barId) {
+    const container = document.getElementById(containerId);
+    const bar = document.getElementById(barId);
+    const winScroll = container.scrollTop;
+    const height = container.scrollHeight - container.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    bar.style.width = scrolled + "%";
+}
+
 const LOGOS = {
     'MARCA': 'https://play-lh.googleusercontent.com/pap31KXKXxCEjD5_Gp4hsBRS-_dqtdyt7n_k8TbwgPpKZLPUt1ISOTkqknNkqVF_JA',
     'AS': 'https://dralbertomarques.com/wp-content/uploads/2018/07/diario-as-logo.png',
@@ -237,7 +251,7 @@ function showTab(type, btn) {
     btn.classList.add('active');
 }
 
-async function loadSection(urls, containerId) {
+async function loadSection(urls, containerId, barId) {
     const container = document.getElementById(containerId);
     container.innerHTML = '<div style="padding:40px; text-align:center; opacity:0.5; font-size:0.8rem;">Sincronizando señales...</div>';
     
@@ -250,10 +264,8 @@ async function loadSection(urls, containerId) {
                 const sName = cleanName(url);
                 data.items.forEach(item => {
                     allItems.push({
-                        title: item.title,
-                        link: item.link,
-                        date: new Date(item.pubDate),
-                        source: sName,
+                        title: item.title, link: item.link,
+                        date: new Date(item.pubDate), source: sName,
                         img: LOGOS[sName] || item.thumbnail || (item.enclosure && item.enclosure.link) || ""
                     });
                 });
@@ -281,12 +293,15 @@ async function loadSection(urls, containerId) {
             </div>
         </a>`;
     }).join('');
+    
+    // Reset bar on load
+    document.getElementById(barId).style.width = "0%";
 }
 
 function refreshAll() {
-    loadSection(CONFIG.ES, 'news-es');
-    loadSection(CONFIG.USA, 'news-usa');
-    loadSection(CONFIG.SUBS, 'news-subs');
+    loadSection(CONFIG.ES, 'news-es', 'bar-es');
+    loadSection(CONFIG.USA, 'news-usa', 'bar-usa');
+    loadSection(CONFIG.SUBS, 'news-subs', 'bar-subs');
 }
 
 window.onload = () => {
