@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard undo</title>
+<title>NBA Dashboard clutch</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -194,6 +194,7 @@ const LOGOS = {
     'NBA MANIACS': 'https://pbs.twimg.com/profile_images/1891114075666407424/eqdnOr7G_400x400.jpg',
     'GIGANTES': 'https://yt3.googleusercontent.com/ytc/AIdro_n1bU-xv4h6TkWsAeMQyvSWmb4eOeEMqMzNFQRRcduzjno=s900-c-k-c0x00ffffff-no-rj',
     'ESPN': 'https://espnpressroom.com/us/files/2018/03/App-Icon-iOS-150x150.png',
+    'CLUTCH POINTS': 'https://upload.wikimedia.org/wikipedia/commons/5/5b/ClutchPoints_CP_Logo.png',
     'YAHOO! SPORTS': 'https://static.wikia.nocookie.net/logopedia/images/1/19/Yahoosports.jpg',
     'HOOPS RUMORS': 'https://cdn.mlbtraderumors.com/files/old/6a00d834515b9a69e2016300dc5dae970d-pi.jpg',
     'HOOPS WIRE': 'https://i0.wp.com/hoopswire.com/wp-content/uploads/2025/06/hoopswire.jpg',
@@ -203,7 +204,7 @@ const LOGOS = {
 
 const CONFIG = {
     ES: ['https://www.nbamaniacs.com/feed/', 'https://www.gigantes.com/nba/feed', 'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml', 'https://www.mundodeportivo.com/feed/rss/baloncesto/nba', 'https://www.sport.es/es/rss/nba/rss.xml', 'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/'],
-    USA: ['https://www.espn.com/espn/rss/nba/news', 'https://www.cbssports.com/rss/headlines/nba/', 'https://basketball.realgm.com/rss/wiretap/0/0.xml', 'https://www.hoopsrumors.com/feed', 'https://hoopswire.com/feed/', 'https://sports.yahoo.com/nba/rss/'],
+    USA: ['https://clutchpoints.com/feed/', 'https://www.espn.com/espn/rss/nba/news', 'https://www.cbssports.com/rss/headlines/nba/', 'https://basketball.realgm.com/rss/wiretap/0/0.xml', 'https://www.hoopsrumors.com/feed', 'https://hoopswire.com/feed/', 'https://sports.yahoo.com/nba/rss/'],
     SUBS: ['https://www.nbaconcontexto.com/feed', 'https://alejandroggo.com/feed', 'https://marcstein.substack.com/feed', 'https://www.roycewebb.com/feed', 'https://www.tomthefinder.com/feed', 'https://www.basketballintelligence.net/feed', 'https://www.truehoop.com/feed']
 };
 
@@ -215,6 +216,7 @@ function cleanName(u) {
     if (l.includes('as.com')) return 'AS';
     if (l.includes('gigantes.com')) return 'GIGANTES';
     if (l.includes('nbamaniacs')) return 'NBA MANIACS';
+    if (l.includes('clutchpoints')) return 'CLUTCH POINTS';
     if (l.includes('yahoo.com')) return 'YAHOO! SPORTS';
     if (l.includes('espn')) return 'ESPN';
     if (l.includes('cbssports')) return 'CBS SPORTS';
