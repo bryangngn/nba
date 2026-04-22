@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard pro</title>
+<title>NBA Dashboard flags</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -30,7 +30,6 @@ h1 {
     font-weight: 900; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
 }
 
-/* Grid principal */
 .dashboard-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
@@ -44,22 +43,22 @@ h1 {
     border: 1px solid var(--border); 
     height: 78vh; display: flex; flex-direction: column; 
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: border-color 0.3s ease;
 }
 
 .section:hover { border-color: rgba(56, 189, 248, 0.3); }
 
 .section-header { 
     padding: 16px; 
-    background: rgba(30, 41, 59, 0.5);
+    background: rgba(30, 41, 59, 0.6);
     border-bottom: 1px solid var(--border); 
-    font-weight: 800; font-size: 0.8rem; text-align: center; 
+    font-weight: 800; font-size: 0.85rem; text-align: center; 
     letter-spacing: 2px; color: var(--accent);
+    display: flex; align-items: center; justify-content: center; gap: 10px;
 }
 
 .feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; }
 
-/* News Items Animados */
 .news-item { 
     display: flex; gap: 14px; padding: 15px; 
     text-decoration: none; color: inherit; 
@@ -84,7 +83,6 @@ h1 {
 
 .news-meta { font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); }
 
-/* Badge de "AHORA" */
 .live-dot {
     display: inline-block; width: 8px; height: 8px; 
     background: var(--live); border-radius: 50%; margin-right: 5px;
@@ -92,7 +90,6 @@ h1 {
 }
 @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-/* Botón flotante */
 .refresh-fab {
     position: fixed; right: 30px; bottom: 30px;
     width: 50px; height: 50px; background: var(--accent);
@@ -105,7 +102,6 @@ h1 {
 footer { text-align: center; padding: 20px; font-size: 0.75rem; color: var(--text-dim); }
 footer strong { color: var(--accent); }
 
-/* Móvil */
 @media (max-width: 768px) {
     .dashboard-grid { display: block; padding: 0 10px 80px 10px; }
     .section { display: none; height: 78vh; border-radius: 0; border: none; background: transparent; }
@@ -128,15 +124,15 @@ footer strong { color: var(--accent); }
 
 <div class="dashboard-grid">
     <div class="section active" id="sec-es">
-        <div class="section-header">ESPAÑA</div>
+        <div class="section-header"><span>🇪🇸</span> ESPAÑA</div>
         <div class="feed-container" id="news-es"></div>
     </div>
     <div class="section" id="sec-usa">
-        <div class="section-header">USA</div>
+        <div class="section-header"><span>🇺🇸</span> USA</div>
         <div class="feed-container" id="news-usa"></div>
     </div>
     <div class="section" id="sec-subs">
-        <div class="section-header">NEWSLETTERS</div>
+        <div class="section-header"><span>📩</span> NEWSLETTERS</div>
         <div class="feed-container" id="news-subs"></div>
     </div>
 </div>
@@ -148,7 +144,7 @@ footer strong { color: var(--accent); }
 <div class="mobile-nav" id="m-nav" style="display: none;">
     <button class="nav-btn active" onclick="showTab('es', this)"><span>🇪🇸</span><span>España</span></button>
     <button class="nav-btn" onclick="showTab('usa', this)"><span>🇺🇸</span><span>USA</span></button>
-    <button class="nav-btn" onclick="showTab('subs', this)"><span>📧</span><span>Subs</span></button>
+    <button class="nav-btn" onclick="showTab('subs', this)"><span>📩</span><span>Subs</span></button>
 </div>
 
 <script>
@@ -212,7 +208,6 @@ async function loadSection(urls, containerId) {
     let allItems = [];
     const promises = urls.map(async (url) => {
         try {
-            // Cache buster para forzar noticias frescas
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}&t=${Date.now()}`);
             const data = await res.json();
             if (data.status === 'ok') {
@@ -236,7 +231,7 @@ async function loadSection(urls, containerId) {
     const now = new Date();
 
     container.innerHTML = allItems.map(i => {
-        const isNew = (now - i.date) < 3600000; // Menos de 1 hora
+        const isNew = (now - i.date) < 3600000;
         const dStr = i.date.toLocaleDateString([], {day:'2-digit', month:'short'});
         const tStr = i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         
