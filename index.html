@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard flags</title>
+<title>NBA Dashboard new flags</title>
 <style>
 :root { 
     --bg-body: #050a14; 
@@ -54,8 +54,12 @@ h1 {
     border-bottom: 1px solid var(--border); 
     font-weight: 800; font-size: 0.85rem; text-align: center; 
     letter-spacing: 2px; color: var(--accent);
-    display: flex; align-items: center; justify-content: center; gap: 10px;
+    display: flex; align-items: center; justify-content: center; gap: 12px;
 }
+
+/* Estilo para las banderas/iconos del encabezado */
+.header-icon { width: 22px; height: auto; border-radius: 3px; display: block; }
+.mail-icon { filter: invert(70%) sepia(50%) saturate(2000%) hue-rotate(170deg); }
 
 .feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; }
 
@@ -109,7 +113,7 @@ footer strong { color: var(--accent); }
     .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
     .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .nav-btn.active { color: var(--accent); }
-    .refresh-fab { bottom: 85px; right: 20px; width: 45px; height: 45px; }
+    .nav-btn img { width: 18px; margin-bottom: 2px; }
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -124,15 +128,24 @@ footer strong { color: var(--accent); }
 
 <div class="dashboard-grid">
     <div class="section active" id="sec-es">
-        <div class="section-header"><span>🇪🇸</span> ESPAÑA</div>
+        <div class="section-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg" class="header-icon">
+            ESPAÑA
+        </div>
         <div class="feed-container" id="news-es"></div>
     </div>
     <div class="section" id="sec-usa">
-        <div class="section-header"><span>🇺🇸</span> USA</div>
+        <div class="section-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg" class="header-icon">
+            USA
+        </div>
         <div class="feed-container" id="news-usa"></div>
     </div>
     <div class="section" id="sec-subs">
-        <div class="section-header"><span>📩</span> NEWSLETTERS</div>
+        <div class="section-header">
+            <img src="https://www.svgrepo.com/show/522396/mail.svg" class="header-icon mail-icon">
+            NEWSLETTERS
+        </div>
         <div class="feed-container" id="news-subs"></div>
     </div>
 </div>
@@ -142,12 +155,22 @@ footer strong { color: var(--accent); }
 </footer>
 
 <div class="mobile-nav" id="m-nav" style="display: none;">
-    <button class="nav-btn active" onclick="showTab('es', this)"><span>🇪🇸</span><span>España</span></button>
-    <button class="nav-btn" onclick="showTab('usa', this)"><span>🇺🇸</span><span>USA</span></button>
-    <button class="nav-btn" onclick="showTab('subs', this)"><span>📩</span><span>Subs</span></button>
+    <button class="nav-btn active" onclick="showTab('es', this)">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Bandera_de_Espa%C3%B1a.svg">
+        <span>España</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('usa', this)">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Flag_of_the_United_States.svg">
+        <span>USA</span>
+    </button>
+    <button class="nav-btn" onclick="showTab('subs', this)">
+        <img src="https://www.svgrepo.com/show/522396/mail.svg" style="filter: brightness(0) invert(1);">
+        <span>Subs</span>
+    </button>
 </div>
 
 <script>
+// El resto del JS se mantiene igual...
 const LOGOS = {
     'MARCA': 'https://play-lh.googleusercontent.com/pap31KXKXxCEjD5_Gp4hsBRS-_dqtdyt7n_k8TbwgPpKZLPUt1ISOTkqknNkqVF_JA',
     'AS': 'https://dralbertomarques.com/wp-content/uploads/2018/07/diario-as-logo.png',
