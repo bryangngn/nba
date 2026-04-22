@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NBA Dashboard tooltip</title>
+<title>NBA Dashboard glass</title>
 <style>
 :root { 
     --bg-body: #050a14; 
-    --bg-card: rgba(22, 30, 45, 0.7); 
+    --bg-card: rgba(22, 30, 45, 0.4); 
     --text-main: #f1f5f9; 
     --text-dim: #94a3b8; 
     --accent: #38bdf8; 
@@ -18,6 +18,7 @@
 body { 
     font-family: 'Inter', 'Segoe UI', sans-serif; 
     background: radial-gradient(circle at top right, #1e293b, #050a14);
+    background-attachment: fixed;
     color: var(--text-main); 
     margin: 0; padding: 0; 
     display: flex; flex-direction: column; 
@@ -26,32 +27,40 @@ body {
 
 h1 { 
     text-align: center; color: var(--accent); font-size: 1.5rem; 
-    margin: 20px 0; text-transform: uppercase; letter-spacing: 4px; 
+    padding: 25px 0; text-transform: uppercase; letter-spacing: 4px; 
     font-weight: 900; text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    margin: 0;
 }
 
 .dashboard-grid { 
     display: grid; 
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); 
-    gap: 20px; padding: 0 20px 20px 20px; flex-grow: 1; 
+    gap: 25px; padding: 0 25px 25px 25px; flex-grow: 1; 
 }
 
+/* EFECTO GLASSMORPHISM AVANZADO */
 .section { 
     background: var(--bg-card); 
-    backdrop-filter: blur(12px);
-    border-radius: 16px; 
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 20px; 
     border: 1px solid var(--border); 
     height: 78vh; display: flex; flex-direction: column; 
     overflow: hidden;
     position: relative;
-    transition: border-color 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-.section:hover { border-color: rgba(56, 189, 248, 0.3); }
+.section:hover { 
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 40px 0 rgba(56, 189, 248, 0.15);
+}
 
 .section-header { 
-    padding: 16px; 
-    background: rgba(30, 41, 59, 0.8);
+    padding: 18px; 
+    background: rgba(30, 41, 59, 0.7);
     border-bottom: 1px solid var(--border); 
     font-weight: 800; font-size: 0.85rem; text-align: center; 
     letter-spacing: 2px; color: var(--accent);
@@ -59,88 +68,84 @@ h1 {
     z-index: 10;
 }
 
+/* BARRA DE PROGRESO */
 .progress-container {
-    position: absolute;
-    top: 51px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: transparent;
-    z-index: 20;
+    position: absolute; top: 54px; left: 0; width: 100%; height: 3px; background: transparent; z-index: 20;
 }
 .progress-bar {
-    height: 100%;
-    width: 0%;
-    background: var(--accent);
-    box-shadow: 0 0 10px var(--accent);
-    transition: width 0.1s ease-out;
+    height: 100%; width: 0%; background: var(--accent); box-shadow: 0 0 10px var(--accent); transition: width 0.1s ease-out;
 }
 
-.header-icon { width: 22px; height: auto; border-radius: 3px; display: block; }
+.header-icon { width: 22px; height: auto; border-radius: 3px; }
 .newsletter-svg { filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%); }
 
-.feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; }
+.feed-container { flex-grow: 1; overflow-y: auto; scroll-behavior: smooth; padding-bottom: 20px; }
 
+/* ANIMACIÓN EN CASCADA (STAGGER) */
 .news-item { 
-    display: flex; gap: 14px; padding: 15px; 
+    display: flex; gap: 14px; padding: 18px; 
     text-decoration: none; color: inherit; 
     border-bottom: 1px solid var(--border); 
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    opacity: 0; /* Empieza invisible para la animación */
+    transform: translateY(20px);
 }
-.news-item:hover { background: rgba(255, 255, 255, 0.03); padding-left: 18px; }
+
+/* Esta clase se añade por JS para activar la animación */
+.news-item.animate {
+    animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.news-item:hover { background: rgba(255, 255, 255, 0.05); }
 
 .thumb { 
-    width: 90px; height: 65px; border-radius: 8px; 
+    width: 95px; height: 68px; border-radius: 10px; 
     object-fit: contain; background: #000; 
     flex-shrink: 0; padding: 4px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: transform 0.3s ease;
 }
+.news-item:hover .thumb { transform: scale(1.05); }
 
 .news-content { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-.news-title { font-size: 0.9rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
+.news-title { font-size: 0.92rem; font-weight: 600; line-height: 1.4; margin-bottom: 8px; }
 .news-meta { font-size: 0.7rem; display: flex; justify-content: space-between; align-items: center; color: var(--text-dim); }
 
-/* ESTILO PARA EL TOOLTIP DE FUENTE */
 .source-tag {
-    background: rgba(56, 189, 248, 0.1);
-    color: var(--accent);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 700;
-    cursor: help; /* Indica que hay información al pasar el ratón */
-    transition: background 0.2s;
+    background: rgba(56, 189, 248, 0.1); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-weight: 700; cursor: help; transition: all 0.2s;
 }
-.source-tag:hover {
-    background: rgba(56, 189, 248, 0.25);
-}
+.source-tag:hover { background: rgba(56, 189, 248, 0.25); color: #fff; }
 
 .live-dot {
-    display: inline-block; width: 8px; height: 8px; 
-    background: var(--live); border-radius: 50%; margin-right: 5px;
-    animation: blink 1.5s infinite;
+    display: inline-block; width: 8px; height: 8px; background: var(--live); border-radius: 50%; margin-right: 5px; animation: blink 1.5s infinite;
 }
 @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
 .refresh-fab {
-    position: fixed; right: 30px; bottom: 30px;
-    width: 50px; height: 50px; background: var(--accent);
+    position: fixed; right: 35px; bottom: 35px;
+    width: 55px; height: 55px; background: var(--accent);
     border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    cursor: pointer; box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
-    z-index: 200; transition: 0.3s; border: none; font-size: 1.5rem;
+    cursor: pointer; box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+    z-index: 200; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: none; font-size: 1.6rem;
 }
-.refresh-fab:hover { transform: rotate(180deg) scale(1.1); }
+.refresh-fab:hover { transform: rotate(180deg) scale(1.15); box-shadow: 0 12px 30px rgba(56, 189, 248, 0.6); }
 
-footer { text-align: center; padding: 20px; font-size: 0.75rem; color: var(--text-dim); }
+footer { text-align: center; padding: 25px; font-size: 0.75rem; color: var(--text-dim); opacity: 0.8; }
 footer strong { color: var(--accent); }
 
 @media (max-width: 768px) {
-    .dashboard-grid { display: block; padding: 0 10px 80px 10px; }
-    .section { display: none; height: 78vh; border-radius: 0; border: none; background: transparent; }
+    .dashboard-grid { display: block; padding: 0 10px 85px 10px; }
+    .section { display: none; height: 75vh; border-radius: 0; border: none; background: transparent; }
     .section.active { display: flex; }
-    .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: #1e293b; border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 12px 0; z-index: 1000; }
-    .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; text-transform: uppercase; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .mobile-nav { display: flex; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(10px); border-top: 1px solid var(--border); justify-content: space-around; padding: 12px 0; z-index: 1000; }
+    .nav-btn { background: none; border: none; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .nav-btn.active { color: var(--accent); }
-    .nav-btn .nav-icon { width: 18px; margin-bottom: 2px; }
+    .nav-btn .nav-icon { width: 20px; }
+    .refresh-fab { bottom: 95px; right: 20px; width: 50px; height: 50px; }
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -267,10 +272,8 @@ async function loadSection(urls, containerId, barId) {
                 const sName = cleanName(url);
                 data.items.forEach(item => {
                     allItems.push({
-                        title: item.title, link: item.link,
-                        date: new Date(item.pubDate), 
-                        sourceShort: sName,
-                        sourceFull: data.feed.title || sName, // Guardamos el nombre completo del RSS
+                        title: item.title, link: item.link, date: new Date(item.pubDate), 
+                        sourceShort: sName, sourceFull: data.feed.title || sName,
                         img: LOGOS[sName] || item.thumbnail || (item.enclosure && item.enclosure.link) || ""
                     });
                 });
@@ -282,12 +285,13 @@ async function loadSection(urls, containerId, barId) {
     allItems.sort((a, b) => b.date - a.date);
     const now = new Date();
 
-    container.innerHTML = allItems.map(i => {
+    // Renderizado con animación escalonada
+    container.innerHTML = allItems.map((i, index) => {
         const isNew = (now - i.date) < 3600000;
         const dStr = i.date.toLocaleDateString([], {day:'2-digit', month:'short'});
         const tStr = i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         return `
-        <a href="${i.link}" target="_blank" class="news-item">
+        <a href="${i.link}" target="_blank" class="news-item" style="animation-delay: ${index * 0.05}s">
             <img src="${i.img || 'https://via.placeholder.com/90x65/161e2d/38bdf8?text=NBA'}" class="thumb">
             <div class="news-content">
                 <span class="news-title">${i.title}</span>
@@ -299,6 +303,11 @@ async function loadSection(urls, containerId, barId) {
         </a>`;
     }).join('');
     
+    // Activar animaciones
+    setTimeout(() => {
+        container.querySelectorAll('.news-item').forEach(item => item.classList.add('animate'));
+    }, 50);
+
     document.getElementById(barId).style.width = "0%";
 }
 
