@@ -205,7 +205,19 @@ const LOGOS = {
 const CONFIG = {
     ES: ['https://www.nbamaniacs.com/feed/', 'https://www.gigantes.com/nba/feed', 'https://e00-marca.uecdn.es/rss/baloncesto/nba.xml', 'https://www.mundodeportivo.com/feed/rss/baloncesto/nba', 'https://www.sport.es/es/rss/nba/rss.xml', 'https://feeds.as.com/mrss-s/pages/as/site/as.com/section/baloncesto/subsection/nba/'],
     USA: ['https://sportando.basketball/en/category/usa/nba/feed/', 'https://www.espn.com/espn/rss/nba/news', 'https://www.cbssports.com/rss/headlines/nba/', 'https://basketball.realgm.com/rss/wiretap/0/0.xml', 'https://www.hoopsrumors.com/feed', 'https://hoopswire.com/feed/', 'https://sports.yahoo.com/nba/rss/'],
-    SUBS: ['https://www.nbaconcontexto.com/feed', 'https://alejandroggo.com/feed', 'https://marcstein.substack.com/feed', 'https://www.roycewebb.com/feed', 'https://www.tomthefinder.com/feed', 'https://www.basketballintelligence.net/feed', 'https://www.truehoop.com/feed']
+    SUBS: [
+        'https://www.nbaconcontexto.com/feed', 
+        'https://alejandroggo.com/feed', 
+        'https://marcstein.substack.com/feed', 
+        'https://www.roycewebb.com/feed', 
+        'https://www.tomthefinder.com/feed', 
+        'https://www.basketballintelligence.net/feed', 
+        'https://www.truehoop.com/feed',
+        'https://www.nbabigboard.com/feed',
+        'https://www.noceilingsnba.com/feed',
+        'https://jsutthoops.substack.com/feed',
+        'https://www.basketballpoetry.com/feed'
+    ]
 };
 
 function cleanName(u) {
@@ -233,6 +245,10 @@ function cleanName(u) {
     if (l.includes('tomthefinder')) return 'THE FINDER';
     if (l.includes('basketballintelligence')) return 'BASKETBALL INTELLIGENCE';
     if (l.includes('truehoop')) return 'TRUEHOOP';
+    if (l.includes('nbabigboard')) return 'NBA BIG BOARD';
+    if (l.includes('noceilingsnba')) return 'NO CEILINGS';
+    if (l.includes('jsutthoops')) return 'JACOB SUTTON';
+    if (l.includes('basketballpoetry')) return 'BASKETBALL POETRY';
     
     return "NBA";
 }
