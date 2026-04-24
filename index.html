@@ -222,14 +222,12 @@ const CONFIG = {
 
 function cleanName(u) {
     const l = u.toLowerCase();
-    // España
     if (l.includes('marca.com') || l.includes('uecdn.es')) return 'MARCA'; 
     if (l.includes('mundodeportivo')) return 'MUNDO DEPORTIVO';
     if (l.includes('sport.es')) return 'SPORT';
     if (l.includes('as.com')) return 'AS';
     if (l.includes('gigantes.com')) return 'GIGANTES';
     if (l.includes('nbamaniacs')) return 'NBA MANIACS';
-    // USA
     if (l.includes('sportando')) return 'SPORTANDO';
     if (l.includes('yahoo.com')) return 'YAHOO! SPORTS';
     if (l.includes('espn')) return 'ESPN';
@@ -237,7 +235,6 @@ function cleanName(u) {
     if (l.includes('realgm')) return 'REALGM';
     if (l.includes('hoopsrumors')) return 'HOOPS RUMORS';
     if (l.includes('hoopswire')) return 'HOOPS WIRE';
-    // Newsletters
     if (l.includes('nbaconcontexto')) return 'NBA CON CONTEXTO';
     if (l.includes('alejandroggo')) return 'ALEJANDRO GGO';
     if (l.includes('marcstein')) return 'MARC STEIN';
@@ -249,8 +246,21 @@ function cleanName(u) {
     if (l.includes('noceilingsnba')) return 'NO CEILINGS';
     if (l.includes('jsutthoops')) return 'JACOB SUTTON';
     if (l.includes('basketballpoetry')) return 'BASKETBALL POETRY';
-    
     return "NBA";
+}
+
+function formatDateLabel(date) {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const itemDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (itemDate.getTime() === today.getTime()) return "Hoy";
+    if (itemDate.getTime() === yesterday.getTime()) return "Ayer";
+    
+    return date.toLocaleDateString([], {day:'2-digit', month:'short'});
 }
 
 async function loadSection(urls, containerId, barId) {
@@ -276,7 +286,7 @@ async function loadSection(urls, containerId, barId) {
     await Promise.all(promises);
     allItems.sort((a, b) => b.date - a.date);
     container.innerHTML = allItems.map((i, index) => {
-        const dStr = i.date.toLocaleDateString([], {day:'2-digit', month:'short'});
+        const dateLabel = formatDateLabel(i.date);
         const tStr = i.date.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
         return `
         <a href="${i.link}" target="_blank" class="news-item" style="animation-delay: ${index * 0.05}s">
@@ -285,7 +295,7 @@ async function loadSection(urls, containerId, barId) {
                 <span class="news-title">${i.title}</span>
                 <div class="news-meta">
                     <span class="source-tag" title="${i.sourceFull}">${i.sourceShort}</span>
-                    <span>${dStr} • ${tStr}</span>
+                    <span>${dateLabel} • ${tStr}</span>
                 </div>
             </div>
         </a>`;
