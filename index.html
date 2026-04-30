@@ -68,7 +68,6 @@ h1 {
 .header-icon, .nav-icon { width: 20px; height: auto; border-radius: 2px; }
 .nav-icon { width: 18px; margin-bottom: 4px; opacity: 0.6; transition: 0.3s; }
 .nav-btn.active .nav-icon { opacity: 1; filter: drop-shadow(0 0 5px var(--accent)); }
-/* Filtro específico para el icono de mail en el nav móvil */
 .mail-icon { filter: invert(71%) sepia(85%) saturate(1514%) hue-rotate(167deg) brightness(101%) contrast(97%); }
 
 .progress-container {
@@ -147,15 +146,9 @@ footer {
         z-index: 1000; 
     }
     .nav-btn { 
-        background: none; 
-        border: none; 
-        color: var(--text-dim); 
-        font-size: 0.65rem; 
-        font-weight: 800; 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        flex: 1;
+        background: none; border: none; color: var(--text-dim); 
+        font-size: 0.65rem; font-weight: 800; display: flex; 
+        flex-direction: column; align-items: center; flex: 1;
         letter-spacing: 1px;
     }
     .nav-btn.active { color: var(--accent); }
@@ -246,7 +239,9 @@ const CONFIG = {
         'https://www.nbaconcontexto.com/feed', 'https://alejandroggo.com/feed', 'https://marcstein.substack.com/feed', 
         'https://www.roycewebb.com/feed', 'https://www.tomthefinder.com/feed', 'https://www.basketballintelligence.net/feed', 
         'https://www.truehoop.com/feed', 'https://www.nbabigboard.com/feed', 'https://www.noceilingsnba.com/feed',
-        'https://jsutthoops.substack.com/feed', 'https://www.basketballpoetry.com/feed'
+        'https://jsutthoops.substack.com/feed', 'https://www.basketballpoetry.com/feed',
+        'https://www.basketunderreview.com/rss/', 'https://digginbasketball.substack.com/feed',
+        'https://www.basketballfeelings.com/feed', 'https://ensayosdebasquet.substack.com/feed'
     ]
 };
 
@@ -276,6 +271,10 @@ function cleanName(u) {
     if (l.includes('noceilingsnba')) return 'NO CEILINGS';
     if (l.includes('jsutthoops')) return 'JACOB SUTTON';
     if (l.includes('basketballpoetry')) return 'BASKETBALL POETRY';
+    if (l.includes('basketunderreview')) return 'BASKET UNDER REVIEW';
+    if (l.includes('digginbasketball')) return 'DIGGIN BASKETBALL';
+    if (l.includes('basketballfeelings')) return 'BASKETBALL FEELINGS';
+    if (l.includes('ensayosdebasquet')) return 'ENSAYOS DE BÁSQUET';
     return "NBA";
 }
 
